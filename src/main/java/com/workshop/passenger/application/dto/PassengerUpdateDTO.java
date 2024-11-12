@@ -1,13 +1,10 @@
-package com.workshop.passenger.domain.model.aggregates;
+package com.workshop.passenger.application.dto;
 
 import com.workshop.passenger.domain.model.entities.Trip;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.bson.types.ObjectId;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
@@ -21,11 +18,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Document(collection = "Passenger")
-public class Passenger {
-
-    @Id
-    private ObjectId id;
+public class PassengerUpdateDTO {
 
     @NotBlank(message = "Name is required")
     private String name;

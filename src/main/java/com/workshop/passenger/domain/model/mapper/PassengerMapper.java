@@ -1,5 +1,6 @@
 package com.workshop.passenger.domain.model.mapper;
 
+import com.workshop.passenger.application.dto.PassengerUpdateDTO;
 import com.workshop.passenger.domain.model.aggregates.Passenger;
 import org.modelmapper.ModelMapper;
 
@@ -10,8 +11,7 @@ public class PassengerMapper {
     private PassengerMapper() {
     }
 
-    public static Passenger mapToExistingPassenger(Passenger source, Passenger target) {
+    public static void mapToExistingPassenger(PassengerUpdateDTO source, Passenger target) {
         modelMapper.map(source, target);
-        return target;
     }
 }

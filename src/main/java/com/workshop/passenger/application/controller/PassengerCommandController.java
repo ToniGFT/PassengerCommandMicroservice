@@ -1,5 +1,6 @@
 package com.workshop.passenger.application.controller;
 
+import com.workshop.passenger.application.dto.PassengerUpdateDTO;
 import com.workshop.passenger.application.response.service.PassengerResponseService;
 import com.workshop.passenger.application.services.PassengerCommandService;
 import com.workshop.passenger.domain.model.aggregates.Passenger;
@@ -27,7 +28,7 @@ public class PassengerCommandController {
 
     @PostMapping
     public Mono<ResponseEntity<Passenger>> createPassenger(@Valid @RequestBody Passenger passenger) {
-        logger.info("Attempting to create a new passenger with name: {}", passenger.getName());
+        logger.info("Attempting to create a new passenger with ID: {}", passenger.getId());
         return passengerCommandService.createPassenger(passenger)
                 .flatMap(passengerResponseService::buildCreatedResponse)
                 .doOnSuccess(response -> logger.info("Successfully created passenger with NAME: {}", response.getBody().getName()));
@@ -36,9 +37,9 @@ public class PassengerCommandController {
     @PutMapping("/{id}")
     public Mono<ResponseEntity<Passenger>> updatePassenger(
             @PathVariable String id,
-            @Valid @RequestBody Passenger updatedPassenger) {
+            @Valid @RequestBody PassengerUpdateDTO updatedPassengerDto) {
         logger.info("Attempting to update passenger with ID: {}", id);
-        return passengerCommandService.updatePassenger(id, updatedPassenger)
+        return passengerCommandService.updatePassenger(id, updatedPassengerDto)
                 .flatMap(passengerResponseService::buildOkResponse)
                 .doOnSuccess(response -> logger.info("Successfully updated passenger with ID: {}", id));
     }

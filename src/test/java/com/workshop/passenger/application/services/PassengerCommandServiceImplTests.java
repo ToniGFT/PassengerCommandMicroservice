@@ -1,5 +1,6 @@
 package com.workshop.passenger.application.services;
 
+import com.workshop.passenger.application.dto.PassengerUpdateDTO;
 import com.workshop.passenger.domain.exception.PassengerNotFoundException;
 import com.workshop.passenger.domain.exception.TripNotFoundException;
 import com.workshop.passenger.domain.model.aggregates.Passenger;
@@ -30,6 +31,7 @@ class PassengerCommandServiceImplTests {
     private PassengerCommandRepository passengerCommandRepository;
 
     private Passenger passenger;
+    private PassengerUpdateDTO passengerUpdateDTO;
     private Trip trip;
     private String passengerId;
     private String tripId;
@@ -46,6 +48,13 @@ class PassengerCommandServiceImplTests {
                 .phone("123-456-7890")
                 .preferredPaymentMethod("Credit Card")
                 .trips(new ArrayList<>())
+                .build();
+
+        passengerUpdateDTO = PassengerUpdateDTO.builder()
+                .name("Jane Doe")
+                .email("jane.doe@example.com")
+                .phone("987-654-3210")
+                .preferredPaymentMethod("Debit Card")
                 .build();
 
         trip = Trip.builder()
@@ -76,16 +85,10 @@ class PassengerCommandServiceImplTests {
     @Test
     @DisplayName("Test updatePassenger - Successful Update")
     void testUpdatePassenger_Success() {
-        Passenger updatedPassenger = Passenger.builder()
-                .name("Jane Doe")
-                .email("jane.doe@example.com")
-                .phone("987-654-3210")
-                .build();
-
         when(passengerCommandRepository.findById(passengerId)).thenReturn(Mono.just(passenger));
         when(passengerCommandRepository.save(any(Passenger.class))).thenReturn(Mono.just(passenger));
 
-        Mono<Passenger> result = passengerService.updatePassenger(passengerId, updatedPassenger);
+        Mono<Passenger> result = passengerService.updatePassenger(passengerId, passengerUpdateDTO);
 
         StepVerifier.create(result)
                 .expectNextMatches(updated -> updated.getName().equals("Jane Doe"))
@@ -150,7 +153,7 @@ class PassengerCommandServiceImplTests {
     void testUpdatePassenger_PassengerNotFound() {
         when(passengerCommandRepository.findById(passengerId)).thenReturn(Mono.empty());
 
-        Mono<Passenger> result = passengerService.updatePassenger(passengerId, passenger);
+        Mono<Passenger> result = passengerService.updatePassenger(passengerId, passengerUpdateDTO);
 
         StepVerifier.create(result)
                 .expectError(PassengerNotFoundException.class)

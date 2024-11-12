@@ -1,5 +1,6 @@
 package com.workshop.passenger.application.services;
 
+import com.workshop.passenger.application.dto.PassengerUpdateDTO;
 import com.workshop.passenger.domain.model.aggregates.Passenger;
 import com.workshop.passenger.domain.model.entities.Trip;
 import reactor.core.publisher.Mono;
@@ -8,7 +9,7 @@ public interface PassengerCommandService {
 
     Mono<Passenger> createPassenger(Passenger passenger);
 
-    Mono<Passenger> updatePassenger(String passengerId, Passenger passenger);
+    Mono<Passenger> updatePassenger(String passengerId, PassengerUpdateDTO updatedPassengerDto);
 
     Mono<Void> deletePassenger(String passengerId);
 

@@ -1,5 +1,6 @@
 package com.workshop.passenger.application.services;
 
+import com.workshop.passenger.application.dto.PassengerUpdateDTO;
 import com.workshop.passenger.domain.exception.PassengerNotFoundException;
 import com.workshop.passenger.domain.exception.TripNotFoundException;
 import com.workshop.passenger.domain.model.aggregates.Passenger;
@@ -25,11 +26,11 @@ public class PassengerCommandServiceImpl implements PassengerCommandService {
     }
 
     @Override
-    public Mono<Passenger> updatePassenger(String passengerId, Passenger updatedPassenger) {
+    public Mono<Passenger> updatePassenger(String passengerId, PassengerUpdateDTO updatedPassengerDto) {
         return passengerCommandRepository.findById(passengerId)
                 .switchIfEmpty(Mono.error(new PassengerNotFoundException(passengerId)))
                 .flatMap(existingPassenger -> {
-                    PassengerMapper.mapToExistingPassenger(updatedPassenger, existingPassenger);
+                    PassengerMapper.mapToExistingPassenger(updatedPassengerDto, existingPassenger);
                     return passengerCommandRepository.save(existingPassenger);
                 });
     }

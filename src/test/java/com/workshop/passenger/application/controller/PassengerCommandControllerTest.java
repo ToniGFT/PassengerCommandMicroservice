@@ -1,5 +1,6 @@
 package com.workshop.passenger.application.controller;
 
+import com.workshop.passenger.application.dto.PassengerUpdateDTO;
 import com.workshop.passenger.application.response.service.PassengerResponseService;
 import com.workshop.passenger.application.services.PassengerCommandService;
 import com.workshop.passenger.domain.model.aggregates.Passenger;
@@ -32,6 +33,7 @@ class PassengerCommandControllerTest {
     private PassengerCommandController passengerCommandController;
 
     private Passenger passenger;
+    private PassengerUpdateDTO passengerUpdateDTO;
     private Trip trip;
     private String passengerId;
     private String tripId;
@@ -43,6 +45,14 @@ class PassengerCommandControllerTest {
         tripId = new ObjectId().toHexString();
 
         passenger = Passenger.builder()
+                .name("John Doe")
+                .email("john.doe@example.com")
+                .phone("123-456-7890")
+                .preferredPaymentMethod("Credit Card")
+                .trips(null)
+                .build();
+
+        passengerUpdateDTO = PassengerUpdateDTO.builder()
                 .name("John Doe")
                 .email("john.doe@example.com")
                 .phone("123-456-7890")
@@ -77,11 +87,11 @@ class PassengerCommandControllerTest {
     @Test
     @DisplayName("Update Passenger - Should Return OK Response")
     void updatePassenger_shouldReturnOkResponse() {
-        when(passengerCommandService.updatePassenger(eq(passengerId), any(Passenger.class))).thenReturn(Mono.just(passenger));
+        when(passengerCommandService.updatePassenger(eq(passengerId), any(PassengerUpdateDTO.class))).thenReturn(Mono.just(passenger));
         when(passengerResponseService.buildOkResponse(passenger))
                 .thenReturn(Mono.just(ResponseEntity.ok(passenger)));
 
-        Mono<ResponseEntity<Passenger>> result = passengerCommandController.updatePassenger(passengerId, passenger);
+        Mono<ResponseEntity<Passenger>> result = passengerCommandController.updatePassenger(passengerId, passengerUpdateDTO);
 
         StepVerifier.create(result)
                 .expectNextMatches(response -> response.getBody() != null && response.getBody().getName().equals("John Doe"))
