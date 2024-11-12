@@ -1,4 +1,4 @@
-package com.workshop.passenger.domain.model.operations;
+package com.workshop.passenger.domain.operations;
 
 import com.workshop.passenger.domain.model.aggregates.Passenger;
 import com.workshop.passenger.domain.model.entities.Trip;
@@ -87,5 +87,22 @@ class PassengerTripOperationsTest {
         // Assert
         assertThat(passenger.getTrips()).contains(trip1);
         assertThat(passenger.getTrips().size()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("Has Trip - Should Return True if Trip Exists in Passenger's Trip List")
+    void hasTrip_shouldReturnTrueIfTripExists() {
+        // Arrange
+        passenger.getTrips().add(trip1);
+
+        // Act & Assert
+        assertThat(PassengerTripOperations.hasTrip(passenger, trip1.getTripId())).isTrue();
+    }
+
+    @Test
+    @DisplayName("Has Trip - Should Return False if Trip Does Not Exist in Passenger's Trip List")
+    void hasTrip_shouldReturnFalseIfTripDoesNotExist() {
+        // Act & Assert
+        assertThat(PassengerTripOperations.hasTrip(passenger, "nonexistentTripId")).isFalse();
     }
 }

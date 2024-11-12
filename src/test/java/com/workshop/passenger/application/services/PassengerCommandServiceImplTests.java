@@ -1,5 +1,7 @@
 package com.workshop.passenger.application.services;
 
+import com.workshop.passenger.domain.exception.PassengerNotFoundException;
+import com.workshop.passenger.domain.exception.TripNotFoundException;
 import com.workshop.passenger.domain.model.aggregates.Passenger;
 import com.workshop.passenger.domain.model.entities.Trip;
 import com.workshop.passenger.domain.repository.PassengerCommandRepository;
@@ -56,6 +58,7 @@ class PassengerCommandServiceImplTests {
                 .build();
     }
 
+    // Happy Path Tests
     @Test
     @DisplayName("Test createPassenger - Successful Save")
     void testCreatePassenger_Success() {
@@ -95,6 +98,7 @@ class PassengerCommandServiceImplTests {
     @Test
     @DisplayName("Test deletePassenger - Successful Deletion")
     void testDeletePassenger_Success() {
+        when(passengerCommandRepository.findById(passengerId)).thenReturn(Mono.just(passenger));
         when(passengerCommandRepository.deleteById(passengerId)).thenReturn(Mono.empty());
 
         Mono<Void> result = passengerService.deletePassenger(passengerId);
@@ -102,6 +106,7 @@ class PassengerCommandServiceImplTests {
         StepVerifier.create(result)
                 .verifyComplete();
 
+        verify(passengerCommandRepository, times(1)).findById(passengerId);
         verify(passengerCommandRepository, times(1)).deleteById(passengerId);
     }
 
@@ -137,5 +142,81 @@ class PassengerCommandServiceImplTests {
 
         verify(passengerCommandRepository, times(1)).findById(passengerId);
         verify(passengerCommandRepository, times(1)).save(any(Passenger.class));
+    }
+
+    // Sad Path Tests
+    @Test
+    @DisplayName("Test updatePassenger - Passenger Not Found")
+    void testUpdatePassenger_PassengerNotFound() {
+        when(passengerCommandRepository.findById(passengerId)).thenReturn(Mono.empty());
+
+        Mono<Passenger> result = passengerService.updatePassenger(passengerId, passenger);
+
+        StepVerifier.create(result)
+                .expectError(PassengerNotFoundException.class)
+                .verify();
+
+        verify(passengerCommandRepository, times(1)).findById(passengerId);
+        verify(passengerCommandRepository, never()).save(any(Passenger.class));
+    }
+
+    @Test
+    @DisplayName("Test deletePassenger - Passenger Not Found")
+    void testDeletePassenger_PassengerNotFound() {
+        when(passengerCommandRepository.findById(passengerId)).thenReturn(Mono.empty());
+
+        Mono<Void> result = passengerService.deletePassenger(passengerId);
+
+        StepVerifier.create(result)
+                .expectError(PassengerNotFoundException.class)
+                .verify();
+
+        verify(passengerCommandRepository, times(1)).findById(passengerId);
+        verify(passengerCommandRepository, never()).deleteById(passengerId);
+    }
+
+    @Test
+    @DisplayName("Test addTripToPassenger - Passenger Not Found")
+    void testAddTripToPassenger_PassengerNotFound() {
+        when(passengerCommandRepository.findById(passengerId)).thenReturn(Mono.empty());
+
+        Mono<Passenger> result = passengerService.addTripToPassenger(passengerId, trip);
+
+        StepVerifier.create(result)
+                .expectError(PassengerNotFoundException.class)
+                .verify();
+
+        verify(passengerCommandRepository, times(1)).findById(passengerId);
+        verify(passengerCommandRepository, never()).save(any(Passenger.class));
+    }
+
+    @Test
+    @DisplayName("Test removeTripFromPassenger - Passenger Not Found")
+    void testRemoveTripFromPassenger_PassengerNotFound() {
+        when(passengerCommandRepository.findById(passengerId)).thenReturn(Mono.empty());
+
+        Mono<Passenger> result = passengerService.removeTripFromPassenger(passengerId, tripId);
+
+        StepVerifier.create(result)
+                .expectError(PassengerNotFoundException.class)
+                .verify();
+
+        verify(passengerCommandRepository, times(1)).findById(passengerId);
+        verify(passengerCommandRepository, never()).save(any(Passenger.class));
+    }
+
+    @Test
+    @DisplayName("Test removeTripFromPassenger - Trip Not Found")
+    void testRemoveTripFromPassenger_TripNotFound() {
+        when(passengerCommandRepository.findById(passengerId)).thenReturn(Mono.just(passenger));
+
+        Mono<Passenger> result = passengerService.removeTripFromPassenger(passengerId, tripId);
+
+        StepVerifier.create(result)
+                .expectError(TripNotFoundException.class)
+                .verify();
+
+        verify(passengerCommandRepository, times(1)).findById(passengerId);
+        verify(passengerCommandRepository, never()).save(any(Passenger.class));
     }
 }
