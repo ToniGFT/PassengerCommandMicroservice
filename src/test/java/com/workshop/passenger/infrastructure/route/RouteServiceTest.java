@@ -1,4 +1,4 @@
-package com.workshop.passenger.infrastructure.route.service;
+package com.workshop.passenger.infrastructure.route;
 
 import com.workshop.passenger.infraestructure.Route.model.aggregates.Route;
 import com.workshop.passenger.infraestructure.Route.service.RouteService;
