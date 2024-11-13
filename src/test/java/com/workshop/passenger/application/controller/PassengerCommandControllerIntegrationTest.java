@@ -4,12 +4,15 @@ import com.workshop.passenger.application.dto.PassengerUpdateDTO;
 import com.workshop.passenger.domain.model.aggregates.Passenger;
 import com.workshop.passenger.domain.model.entities.Trip;
 import com.workshop.passenger.domain.repository.PassengerCommandRepository;
+import com.workshop.passenger.infraestructure.Route.service.RouteService;
+import com.workshop.passenger.infraestructure.Vehicle.service.VehicleService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
@@ -29,6 +32,13 @@ class PassengerCommandControllerIntegrationTest {
 
     @Autowired
     private PassengerCommandRepository passengerCommandRepository;
+
+    @MockBean
+    private RouteService routeService;
+
+    @MockBean
+    private VehicleService vehicleService;
+
 
     private Passenger passenger;
     private Trip trip;
