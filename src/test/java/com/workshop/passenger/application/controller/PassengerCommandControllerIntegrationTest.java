@@ -4,11 +4,14 @@ import com.workshop.passenger.application.dto.PassengerUpdateDTO;
 import com.workshop.passenger.domain.model.aggregates.Passenger;
 import com.workshop.passenger.domain.model.entities.Trip;
 import com.workshop.passenger.domain.repository.PassengerCommandRepository;
+import com.workshop.passenger.infraestructure.Route.model.aggregates.Route;
 import com.workshop.passenger.infraestructure.Route.service.RouteService;
+import com.workshop.passenger.infraestructure.Vehicle.model.aggregates.Vehicle;
 import com.workshop.passenger.infraestructure.Vehicle.service.VehicleService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
 
 @SpringBootTest
 @AutoConfigureWebTestClient
@@ -38,7 +42,6 @@ class PassengerCommandControllerIntegrationTest {
 
     @MockBean
     private VehicleService vehicleService;
-
 
     private Passenger passenger;
     private Trip trip;
@@ -63,8 +66,11 @@ class PassengerCommandControllerIntegrationTest {
                 .preferredPaymentMethod("Credit Card")
                 .trips(new ArrayList<>(List.of(trip)))
                 .build();
-    }
 
+        // Mock responses for route and vehicle services
+        Mockito.when(routeService.getRouteById(anyString())).thenReturn(Mono.just(new Route()));
+        Mockito.when(vehicleService.getVehicleById(anyString())).thenReturn(Mono.just(new Vehicle()));
+    }
 
     @Test
     @DisplayName("Create Passenger - Should Return 201 Created")
