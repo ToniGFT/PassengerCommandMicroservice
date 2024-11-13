@@ -1,6 +1,6 @@
 package com.workshop.passenger.infraestructure.Route.service;
 
-import com.workshop.passenger.infraestructure.Vehicle.model.aggregates.Vehicle;
+import com.workshop.passenger.infraestructure.Route.model.aggregates.Route;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -23,11 +23,11 @@ public class RouteService {
         this.baseUrl = baseUrl;
     }
 
-    public Mono<Vehicle> getRouteById(String idString) {
+    public Mono<Route> getRouteById(String idString) {
         return webClient.get()
                 .uri(baseUrl + routeUrl, idString)
                 .retrieve()
-                .bodyToMono(Vehicle.class)
+                .bodyToMono(Route.class)
                 .onErrorResume(error -> {
                     System.err.println("Error calling Route microservice: " + error.getMessage());
                     return Mono.empty();
