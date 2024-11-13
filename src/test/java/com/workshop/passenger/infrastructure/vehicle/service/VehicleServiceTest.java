@@ -1,4 +1,4 @@
-package com.workshop.passenger.infrastructure.route.service;
+package com.workshop.passenger.infrastructure.vehicle.service;
 
 import com.workshop.passenger.infraestructure.Vehicle.model.aggregates.Vehicle;
 import com.workshop.passenger.infraestructure.Vehicle.service.VehicleService;
